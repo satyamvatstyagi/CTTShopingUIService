@@ -1,0 +1,75 @@
+@startuml functional_diagram
+
+package "User Service" {
+  component "Login Service" {
+    [Facebook Login] --> (Login API)
+    [Twitter Login] --> (Login API)
+    [Manual Login] --> (Login API)
+    (Login API) --> [Authentication Service]
+  }
+  note right of (Login API)
+    - Low Latency
+    - 99.9% Availability
+    - Strong Consistency
+    - High Security
+  end note
+}
+
+package "Product Service" {
+  component "Product Operations" {
+    [Add Product] --> (Product API)
+    [Search Product] --> (Product API)
+    (Product API) --> [Database]
+  }
+  note right of (Product API)
+    - Eventual Consistency
+    - High Availability
+    - Low Latency
+  end note
+}
+
+package "Order Service" {
+  component "Order Management" {
+    [Create Order] --> (Order API)
+    [Update Order] --> (Order API)
+    [Cancel Order] --> (Order API)
+    (Order API) --> [Database]
+  }
+  note right of (Order API)
+    - Strong Consistency
+    - High Availability
+    - Low Latency
+  end note
+}
+
+package "Payment Service" {
+  [Payment Gateway] --> (External Service)
+  note right of (External Service)
+    - Secure Transactions
+    - Third-Party API
+  end note
+}
+
+package "Logistic Service" {
+  [Logistic Operations] --> (External Service)
+  note right of (External Service)
+    - Integration with Shipping Partners
+    - Real-Time Updates
+  end note
+}
+
+package "Cart Service" {
+  component "Cart Management" {
+    [Add to Cart] --> (Cart API)
+    [Update Cart] --> (Cart API)
+    [Remove from Cart] --> (Cart API)
+    (Cart API) --> [Database]
+  }
+  note right of (Cart API)
+    - Strong Consistency
+    - High Availability
+    - Low Latency
+  end note
+}
+
+@enduml
