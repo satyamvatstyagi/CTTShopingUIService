@@ -1,0 +1,71 @@
+@startuml ctt_db_erd
+
+entity Users {
+  * UserID : PK
+  --
+  Name : String
+  Email : String
+  PasswordHash : String
+  Role : String
+  CreatedAt : DateTime
+}
+
+entity Products {
+  * ProductID : PK
+  --
+  Name : String
+  Price : Decimal
+  Stock : Integer
+  CreatedAt : DateTime
+  CategoryID : FK
+}
+
+entity Categories {
+  * CategoryID : PK
+  --
+  Name : String
+  ParentID : FK
+}
+
+entity Orders {
+  * OrderID : PK
+  --
+  UserID : FK
+  TotalAmount : Decimal
+  Status : String
+  CreatedAt : DateTime
+}
+
+entity OrderDetails {
+  * OrderDetailID : PK
+  --
+  OrderID : FK
+  ProductID : FK
+  Quantity : Integer
+  Subtotal : Decimal
+}
+
+entity Cart {
+  * CartID : PK
+  --
+  UserID : FK
+  CreatedAt : DateTime
+}
+
+entity CartItems {
+  * CartItemID : PK
+  --
+  CartID : FK
+  ProductID : FK
+  Quantity : Integer
+}
+
+Users ||--o{ Orders : "Places"
+Orders ||--o{ OrderDetails : "Contains"
+Products ||--o{ OrderDetails : "Appears In"
+Categories ||--o{ Products : "Categorizes"
+Users ||--o{ Cart : "Has"
+Cart ||--o{ CartItems : "Contains"
+Products ||--o{ CartItems : "Selected"
+
+@enduml
