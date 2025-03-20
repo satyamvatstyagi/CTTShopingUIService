@@ -10,14 +10,14 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ContactUs from "./pages/ContactUs";
 import UserProfile from "./pages/UserProfile";
 import Wishlist from "./pages/Wishlist";
-import OrderTracking from "./pages/OrderTracking";
+import OrderTracking from "./pages/Ordertracking";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
-import { WishlistProvider } from "./context/WishlistContext";
+import { WishlistProvider } from './context/WishlistContext';
 
 function App() {
     return (
