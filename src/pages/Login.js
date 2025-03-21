@@ -1,27 +1,55 @@
 import React, { useState } from "react";
+import { login } from "../services/authService"; // adjust path as needed
 
 const Login = () => {
-    const [email, setEmail] = useState("");
+    const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Login attempted with", email, password);
+        setError("");
+        setSuccess("");
+
+        try {
+            const res = await login(userName, password);
+            console.log("Login successful:", res);
+            setSuccess("Login successful!");
+            localStorage.setItem("token", res.data?.token || ""); // optional
+        } catch (err) {
+            console.error("Login failed:", err);
+            setError("Invalid username or password");
+        }
     };
 
     return (
-        <div className="container mt-5">
-            <h2>Login</h2>
+        <div className="container mt-5" style={{ maxWidth: "400px" }}>
+            <h2 className="mb-4 text-center">Login</h2>
             <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label>Email:</label>
-                    <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <div className="mb-3">
+                    <label className="form-label">Username:</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                        required
+                    />
                 </div>
-                <div className="form-group">
-                    <label>Password:</label>
-                    <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <div className="mb-3">
+                    <label className="form-label">Password:</label>
+                    <input
+                        type="password"
+                        className="form-control"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
                 </div>
-                <button type="submit" className="btn btn-primary">Login</button>
+                {error && <div className="alert alert-danger">{error}</div>}
+                {success && <div className="alert alert-success">{success}</div>}
+                <button type="submit" className="btn btn-primary w-100">Login</button>
             </form>
         </div>
     );
