@@ -1,12 +1,11 @@
 import axios from "axios";
 
-// ✅ Base URL for the backend
-const API_URL = "http://localhost:8080/user"; // change to HTTPS in prod if needed
+// ✅ Load environment variables
+const API_URL = process.env.REACT_APP_API_URL;
 
-// ✅ Helper to generate Basic Auth header
 const basicAuthHeader = () => {
-    const username = "auth_user";    // 🔁 Replace with your actual auth user
-    const password = "auth_pass";    // 🔁 Replace with your actual auth password
+    const username = process.env.REACT_APP_AUTH_USERNAME;
+    const password = process.env.REACT_APP_AUTH_PASSWORD;
     return `Basic ${btoa(`${username}:${password}`)}`;
 };
 
