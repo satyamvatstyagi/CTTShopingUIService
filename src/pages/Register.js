@@ -1,20 +1,20 @@
 import React, { useState } from "react";
-import { register } from "../services/authService"; // Make sure this path is correct
+import { register } from "../services/authService"; // Ensure this is correct
 
 const Register = () => {
     const [formData, setFormData] = useState({
         user_name: "",
-        email: "",
         password: "",
     });
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -35,11 +35,11 @@ const Register = () => {
     return (
         <div className="d-flex flex-column min-vh-100">
             <main className="flex-grow-1 d-flex align-items-center justify-content-center">
-                <div className="container" style={{ maxWidth: "500px" }}>
+                <div className="container" style={{ maxWidth: "400px" }}>
                     <h2 className="mb-4 text-center">Register</h2>
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
-                            <label className="form-label">Username:</label>
+                            <label className="form-label">Username</label>
                             <input
                                 type="text"
                                 name="user_name"
@@ -50,18 +50,7 @@ const Register = () => {
                             />
                         </div>
                         <div className="mb-3">
-                            <label className="form-label">Email:</label>
-                            <input
-                                type="email"
-                                name="email"
-                                className="form-control"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label className="form-label">Password:</label>
+                            <label className="form-label">Password</label>
                             <input
                                 type="password"
                                 name="password"
@@ -83,7 +72,7 @@ const Register = () => {
             </main>
 
             <footer className="bg-dark text-light text-center py-3 mt-auto">
-                <small>&copy; 2025 CTT Shopping. All rights reserved.</small>
+                <small>&copy; {new Date().getFullYear()} CTT Shopping. All rights reserved.</small>
             </footer>
         </div>
     );
