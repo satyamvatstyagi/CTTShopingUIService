@@ -1,22 +1,26 @@
-import React, { useState } from "react";
-import { login } from "../services/authService"; // adjust path as needed
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { login as loginAPI } from "../services/authService";
+import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
+
+    const navigate = useNavigate();
+    const { login } = useContext(AuthContext); // ✅ context login function
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
-        setSuccess("");
 
         try {
-            const res = await login(userName, password);
-            console.log("Login successful:", res);
-            setSuccess("Login successful!");
+            const res = await loginAPI(userName, password);
             localStorage.setItem("token", res.data?.token || "");
+
+            login({ user_name: userName }); // ✅ set user in context
+            navigate("/"); // ✅ redirect to home
         } catch (err) {
             console.error("Login failed:", err);
             setError("Invalid username or password");
@@ -50,15 +54,13 @@ const Login = () => {
                             />
                         </div>
                         {error && <div className="alert alert-danger">{error}</div>}
-                        {success && <div className="alert alert-success">{success}</div>}
                         <button type="submit" className="btn btn-primary w-100 mt-3">Login</button>
                     </form>
                 </div>
             </main>
 
-            {/* Sticky Footer */}
             <footer className="bg-dark text-light text-center py-3 mt-auto">
-                <small>&copy; 2025 CTT Shopping. All rights reserved.</small>
+                <small>&copy; {new Date().getFullYear()} CTT Shopping. All rights reserved.</small>
             </footer>
         </div>
     );
