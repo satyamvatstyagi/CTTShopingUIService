@@ -1,6 +1,6 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -13,13 +13,11 @@ import ContactUs from "./pages/ContactUs";
 import UserProfile from "./pages/UserProfile";
 import Wishlist from "./pages/Wishlist";
 import OrderTracking from "./pages/Ordertracking";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+
 import ProtectedRoute from "./components/ProtectedRoute";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
-import { WishlistProvider } from './context/WishlistContext';
+import { CartProvider } from "./context/CartContext";
+import { WishlistProvider } from "./context/WishlistContext";
 
 function App() {
     return (
@@ -27,21 +25,59 @@ function App() {
             <CartProvider>
                 <WishlistProvider>
                     <Router>
-                        <Navbar />
                         <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/login" element={<Login />} />
-                            <Route path="/register" element={<Register />} />
-                            <Route path="/products" element={<ProductCatalog />} />
-                            <Route path="/cart" element={<Cart />} />
-                            <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
-                            <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminDashboard /></ProtectedRoute>} />
-                            <Route path="/contact" element={<ContactUs />} />
-                            <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
-                            <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
-                            <Route path="/order-tracking" element={<ProtectedRoute><OrderTracking /></ProtectedRoute>} />
+                            <Route path="/" element={<Layout />}>
+                                {/* Public Pages */}
+                                <Route index element={<Home />} />
+                                <Route path="login" element={<Login />} />
+                                <Route path="register" element={<Register />} />
+                                <Route path="products" element={<ProductCatalog />} />
+                                <Route path="cart" element={<Cart />} />
+                                <Route path="contact" element={<ContactUs />} />
+
+                                {/* Protected Pages */}
+                                <Route
+                                    path="checkout"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Checkout />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="admin"
+                                    element={
+                                        <ProtectedRoute adminOnly>
+                                            <AdminDashboard />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="profile"
+                                    element={
+                                        <ProtectedRoute>
+                                            <UserProfile />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="wishlist"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Wishlist />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="order-tracking"
+                                    element={
+                                        <ProtectedRoute>
+                                            <OrderTracking />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                            </Route>
                         </Routes>
-                        <Footer />
                     </Router>
                 </WishlistProvider>
             </CartProvider>
