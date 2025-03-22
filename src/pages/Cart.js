@@ -1,16 +1,21 @@
-// src/pages/Cart.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { getCart } from "../services/cartService";
+import { AuthContext } from "../context/AuthContext";
 
 const Cart = () => {
+    const { user } = useContext(AuthContext);
     const [cartItems, setCartItems] = useState([]);
-    const [userId] = useState("satyamvats"); // later, get from auth context or localStorage
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchCart = async () => {
+            if (!user?.user_name) {
+                setLoading(false);
+                return;
+            }
+
             try {
-                const res = await getCart(userId);
+                const res = await getCart(user.user_name); // ✅ use username as user_id
                 setCartItems(res.items || []);
             } catch (err) {
                 console.error("Failed to fetch cart:", err);
@@ -18,8 +23,9 @@ const Cart = () => {
                 setLoading(false);
             }
         };
+
         fetchCart();
-    }, [userId]);
+    }, [user]);
 
     const getTotal = () =>
         cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -29,7 +35,11 @@ const Cart = () => {
             <main className="flex-grow-1 container py-5">
                 <h2 className="mb-4 text-center">🛒 Your Shopping Cart</h2>
 
-                {loading ? (
+                {!user ? (
+                    <div className="alert alert-warning text-center">
+                        Please login to view your cart.
+                    </div>
+                ) : loading ? (
                     <p className="text-center">Loading...</p>
                 ) : cartItems.length === 0 ? (
                     <div className="alert alert-info text-center">

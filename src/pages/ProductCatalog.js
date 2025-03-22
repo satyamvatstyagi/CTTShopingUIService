@@ -1,30 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { getProducts } from "../services/productService";
 import { addToCart } from "../services/cartService";
 import ProductCard from "../components/ProductCard";
+import { AuthContext } from "../context/AuthContext";
 
 const ProductCatalog = () => {
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState("");
-    const userId = "satyamvats"; // 🔁 Replace with dynamic value from AuthContext later
+    const { user } = useContext(AuthContext); // ✅ get logged-in user
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const productData = await getProducts();
-                console.log("Fetched products:", productData);
                 setProducts(productData);
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
         };
-
         fetchData();
     }, []);
 
     const handleAddToCart = async (product) => {
+        if (!user) {
+            alert("Please login to add items to cart.");
+            return;
+        }
+
         try {
-            await addToCart(userId, product);
+            await addToCart(user.user_name, product); // ✅ use username as user_id
             alert(`${product.name} added to cart ✅`);
         } catch (err) {
             console.error("Add to cart failed:", err);
