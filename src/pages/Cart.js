@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { getCart } from "../services/cartService";
+import { getCart, removeFromCart, clearCart } from "../services/cartService";
 import { AuthContext } from "../context/AuthContext";
 
 const Cart = () => {
@@ -7,25 +7,45 @@ const Cart = () => {
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const userId = user?.user_name;
+
+    const fetchCart = async () => {
+        if (!userId) {
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const res = await getCart(userId);
+            setCartItems(res.items || []);
+        } catch (err) {
+            console.error("Failed to fetch cart:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchCart = async () => {
-            if (!user?.user_name) {
-                setLoading(false);
-                return;
-            }
-
-            try {
-                const res = await getCart(user.user_name); // ✅ use username as user_id
-                setCartItems(res.items || []);
-            } catch (err) {
-                console.error("Failed to fetch cart:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchCart();
-    }, [user]);
+    }, [userId]);
+
+    const handleRemoveItem = async (productId) => {
+        try {
+            await removeFromCart(userId, productId);
+            fetchCart();
+        } catch (err) {
+            console.error("Failed to remove item:", err);
+        }
+    };
+
+    const handleClearCart = async () => {
+        try {
+            await clearCart(userId);
+            setCartItems([]);
+        } catch (err) {
+            console.error("Failed to clear cart:", err);
+        }
+    };
 
     const getTotal = () =>
         cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -54,14 +74,27 @@ const Cart = () => {
                                         <strong>{item.name}</strong> <br />
                                         <small>₹{item.price} x {item.quantity}</small>
                                     </div>
-                                    <span className="badge bg-primary rounded-pill">
-                                        ₹{item.price * item.quantity}
-                                    </span>
+                                    <div className="d-flex align-items-center">
+                                        <span className="badge bg-primary rounded-pill me-3">
+                                            ₹{item.price * item.quantity}
+                                        </span>
+                                        <button
+                                            className="btn btn-sm btn-outline-danger"
+                                            onClick={() => handleRemoveItem(item.product_id)}
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
                                 </li>
                             ))}
                         </ul>
 
-                        <h5 className="text-end">Total: ₹{getTotal().toFixed(2)}</h5>
+                        <div className="d-flex justify-content-between align-items-center">
+                            <h5>Total: ₹{getTotal().toFixed(2)}</h5>
+                            <button className="btn btn-danger" onClick={handleClearCart}>
+                                Clear Cart
+                            </button>
+                        </div>
                     </>
                 )}
             </main>
