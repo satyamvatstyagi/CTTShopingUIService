@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // ✅ Load environment variables
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = process.env.REACT_APP_USER_API_URL;
 
 const basicAuthHeader = () => {
     const username = process.env.REACT_APP_AUTH_USERNAME;

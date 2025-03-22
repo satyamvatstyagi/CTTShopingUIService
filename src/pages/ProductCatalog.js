@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getProducts } from "../services/productService";
-import ProductCard from "../components/ProductCard";
-import SearchBar from "../components/SearchBar"; // ✅ import the new component
+import ProductCard from "../components/ProductCard"; // ✅ Import reusable card
 
 const ProductCatalog = () => {
     const [products, setProducts] = useState([]);
@@ -12,6 +11,7 @@ const ProductCatalog = () => {
         const fetchData = async () => {
             try {
                 const productData = await getProducts();
+                console.log("Fetched products:", productData);
                 setProducts(productData);
                 setFilteredProducts(productData);
             } catch (error) {
@@ -38,12 +38,15 @@ const ProductCatalog = () => {
             <main className="container flex-grow-1 py-5">
                 <h2 className="mb-4 text-center">🛍️ Product Catalog</h2>
 
-                {/* ✅ Reusable SearchBar */}
-                <SearchBar
-                    value={search}
-                    onChange={setSearch}
-                    placeholder="Search products..."
-                />
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        placeholder="Search products..."
+                        className="form-control"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
 
                 {filteredProducts.length === 0 ? (
                     <p className="text-center text-muted">No products match your search.</p>

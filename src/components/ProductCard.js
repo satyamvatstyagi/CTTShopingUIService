@@ -1,30 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
+
+const DEFAULT_IMAGE = "https://cdn-icons-png.flaticon.com/512/891/891419.png";
 
 const ProductCard = ({ product, onAddToCart }) => {
-    return (
-        <div className="col-md-4 mb-4">
-            <div className="card h-100 shadow-sm">
-                {/* Optional product image */}
-                {product.image && (
-                    <img
-                        src={product.image}
-                        alt={product.name}
-                        className="card-img-top"
-                        style={{ objectFit: "cover", height: "200px" }}
-                    />
-                )}
+    const [imgSrc, setImgSrc] = useState(product.image_url || DEFAULT_IMAGE);
 
-                <div className="card-body d-flex flex-column">
-                    <h5 className="card-title">{product.name}</h5>
-                    <p className="card-text text-muted mb-2">${product.price.toFixed(2)}</p>
-                    <p className="card-text">{product.description}</p>
-                    <button
-                        className="btn btn-outline-primary mt-auto"
-                        onClick={() => onAddToCart(product)}
-                    >
-                        Add to Cart
-                    </button>
-                </div>
+    const handleImageError = () => {
+        if (imgSrc !== DEFAULT_IMAGE) {
+            setImgSrc(DEFAULT_IMAGE);
+        }
+    };
+
+    return (
+        <div className="card h-100 shadow-sm">
+            <img
+                src={imgSrc}
+                alt={product?.name || "Product Image"}
+                className="card-img-top"
+                style={{
+                    width: "100%",
+                    height: "200px",
+                    objectFit: "contain",
+                    padding: "10px",
+                    backgroundColor: "#f8f9fa"
+                }}
+                onError={handleImageError}
+            />
+
+            <div className="card-body d-flex flex-column">
+                <h5 className="card-title">{product?.name || "Unnamed Product"}</h5>
+                <p className="text-muted mb-2">
+                    ₹{product?.price?.toLocaleString("en-IN") || "N/A"}
+                </p>
+                <button
+                    className="btn btn-outline-primary mt-auto"
+                    onClick={() => onAddToCart(product)}
+                >
+                    Add to Cart
+                </button>
             </div>
         </div>
     );
