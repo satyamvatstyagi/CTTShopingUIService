@@ -11,7 +11,7 @@ const basicAuthHeader = () => {
 
 // ✅ Get all products
 export const getProducts = async () => {
-    const response = await axios.get(API_URL, {
+    const response = await axios.get(`${API_URL}/`, {
         headers: {
             Authorization: basicAuthHeader(),
         },
