@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { getCategories, getProductsByCategory } from "../services/productService";
 import ProductCard from "../components/ProductCard";
 import { AuthContext } from "../context/AuthContext";
+import { addToCart } from "../services/cartService";
 
 const CategoryProductList = () => {
     const { user } = useContext(AuthContext);
@@ -34,10 +35,16 @@ const CategoryProductList = () => {
         }
 
         try {
-            await addToCart(user.user_id, product);
+            await addToCart(user.user_id, {
+                product_id: product.id,
+                name: product.name,
+                price: product.price,
+                image_url: product.image_url,
+                quantity: 1,
+            });
             alert(`${product.name} added to cart ✅`);
         } catch (err) {
-            console.error("Add to cart failed:", err);
+            console.error("Add to cart failed:", err.response?.data || err.message);
             alert("Failed to add item to cart.");
         }
     };

@@ -7,7 +7,7 @@ const Cart = () => {
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const userId = user?.user_name;
+    const userId = user?.user_id;
 
     const fetchCart = async () => {
         if (!userId) {

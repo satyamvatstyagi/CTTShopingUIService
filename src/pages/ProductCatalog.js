@@ -36,7 +36,7 @@ const ProductCatalog = () => {
                 quantity: 1,
             };
 
-            await addToCart(user.user_name, cartItem);
+            await addToCart(user.user_id, cartItem);
             alert(`${product.name} added to cart ✅`);
         } catch (err) {
             console.error("Add to cart failed:", err);

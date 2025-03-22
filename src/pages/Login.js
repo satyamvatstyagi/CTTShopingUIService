@@ -7,6 +7,7 @@ const Login = () => {
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState(""); // ✅ Added success state
 
     const navigate = useNavigate();
     const { login } = useContext(AuthContext); // ✅ context login function
@@ -14,13 +15,20 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        setSuccess("");
 
         try {
             const res = await loginAPI(userName, password);
+            setSuccess("Login successful!");
             localStorage.setItem("token", res.data?.token || "");
 
-            login({ user_name: userName }); // ✅ set user in context
-            navigate("/"); // ✅ redirect to home
+            // ✅ Save user info in AuthContext
+            login({
+                user_name: userName,
+                user_id: res.data.id,
+            });
+
+            navigate("/");
         } catch (err) {
             console.error("Login failed:", err);
             setError("Invalid username or password");
@@ -54,6 +62,7 @@ const Login = () => {
                             />
                         </div>
                         {error && <div className="alert alert-danger">{error}</div>}
+                        {success && <div className="alert alert-success">{success}</div>}
                         <button type="submit" className="btn btn-primary w-100 mt-3">Login</button>
                     </form>
                 </div>
