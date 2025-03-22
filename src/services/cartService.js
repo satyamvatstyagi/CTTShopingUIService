@@ -18,3 +18,34 @@ export const getCart = async (userId) => {
     });
     return response.data;
 };
+
+// ✅ Add item to cart
+export const addToCart = async (userId, product) => {
+    const payload = {
+        product_id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+        image_url: product.image_url,
+    };
+
+    const response = await axios.post(`${API_URL}/add?user_id=${userId}`, payload, {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: basicAuthHeader(),
+        },
+    });
+
+    return response.data;
+};
+
+// ✅ Remove item from cart
+export const removeFromCart = async (userId, productId) => {
+    const response = await axios.delete(`${API_URL}/remove/${productId}?user_id=${userId}`, {
+        headers: {
+            Authorization: basicAuthHeader(),
+        },
+    });
+
+    return response.data;
+};
