@@ -3,11 +3,12 @@ import { getProducts } from "../services/productService";
 import { addToCart } from "../services/cartService";
 import ProductCard from "../components/ProductCard";
 import { AuthContext } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 const ProductCatalog = () => {
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState("");
-    const { user } = useContext(AuthContext); // ✅ get logged-in user
+    const { user } = useContext(AuthContext);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -16,6 +17,7 @@ const ProductCatalog = () => {
                 setProducts(productData);
             } catch (error) {
                 console.error("Error fetching products:", error);
+                toast.error("Failed to load products.");
             }
         };
         fetchData();
@@ -23,13 +25,13 @@ const ProductCatalog = () => {
 
     const handleAddToCart = async (product) => {
         if (!user) {
-            alert("Please login to add items to cart.");
+            toast.warning("Please login to add items to cart.");
             return;
         }
 
         try {
             const cartItem = {
-                product_id: product.id || product.product_id, // fallback if needed
+                product_id: product.id || product.product_id,
                 name: product.name,
                 price: product.price,
                 image_url: product.image_url,
@@ -37,10 +39,10 @@ const ProductCatalog = () => {
             };
 
             await addToCart(user.user_id, cartItem);
-            alert(`${product.name} added to cart ✅`);
+            toast.success(`${product.name} added to cart ✅`);
         } catch (err) {
-            console.error("Add to cart failed:", err);
-            alert("Failed to add item to cart.");
+            console.error("Add to cart failed:", err.response?.data || err.message);
+            toast.error("Failed to add item to cart.");
         }
     };
 

@@ -3,6 +3,7 @@ import { getCategories, getProductsByCategory } from "../services/productService
 import ProductCard from "../components/ProductCard";
 import { AuthContext } from "../context/AuthContext";
 import { addToCart } from "../services/cartService";
+import { toast } from "react-toastify";
 
 const CategoryProductList = () => {
     const { user } = useContext(AuthContext);
@@ -21,6 +22,7 @@ const CategoryProductList = () => {
                 setProductsByCategory(categoryMap);
             } catch (err) {
                 console.error("Failed to fetch products by category", err);
+                toast.error("Failed to load categories.");
             } finally {
                 setLoading(false);
             }
@@ -30,7 +32,7 @@ const CategoryProductList = () => {
 
     const handleAddToCart = async (product) => {
         if (!user) {
-            alert("Please login to add items to cart.");
+            toast.warning("Please login to add items to cart.");
             return;
         }
 
@@ -42,10 +44,10 @@ const CategoryProductList = () => {
                 image_url: product.image_url,
                 quantity: 1,
             });
-            alert(`${product.name} added to cart ✅`);
+            toast.success(`${product.name} added to cart ✅`);
         } catch (err) {
             console.error("Add to cart failed:", err.response?.data || err.message);
-            alert("Failed to add item to cart.");
+            toast.error("Failed to add item to cart.");
         }
     };
 
