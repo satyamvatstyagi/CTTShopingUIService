@@ -7,7 +7,7 @@ const CategoryProductList = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchAll = async () => {
+        const fetchData = async () => {
             try {
                 const categories = await getCategories();
                 console.log("Fetched categories:", categories);
@@ -19,27 +19,34 @@ const CategoryProductList = () => {
                 }
 
                 setProductsByCategory(categoryMap);
-                setLoading(false);
             } catch (err) {
-                console.error("Error loading products by category:", err);
+                console.error("Failed to fetch products by category", err);
+            } finally {
                 setLoading(false);
             }
         };
 
-        fetchAll();
+        fetchData();
     }, []);
 
     const handleAddToCart = (product) => {
         console.log("Add to cart clicked:", product);
+        // Later: integrate with CartContext
     };
 
-    if (loading) return <p className="text-center">Loading products...</p>;
+    if (loading) return <div className="text-center mt-5">Loading products by category...</div>;
+
+    if (Object.keys(productsByCategory).length === 0) {
+        return <div className="text-center mt-5 text-muted">No categories found.</div>;
+    }
 
     return (
         <div className="container mt-5">
+            <h2 className="mb-4 text-center">🗂️ Products by Category</h2>
+
             {Object.entries(productsByCategory).map(([category, products]) => (
                 <div key={category} className="mb-5">
-                    <h3 className="mb-4">{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+                    <h3 className="mb-3">{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
                     <div className="row">
                         {products.map((product) => (
                             <div className="col-md-4 mb-4" key={product.id}>
